@@ -194,7 +194,7 @@ export default function CollectionPage() {
                           </div>
                         )}
 
-                        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black opacity-30 flex items-center justify-center">
                           <h3 className="text-xl text-white font-bold text-center p-4">
                             {collection.title}
                           </h3>
