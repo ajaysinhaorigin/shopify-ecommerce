@@ -33,7 +33,6 @@ export default function CartSidebar({ isOpen, onClose }) {
     }
 
     // router.events.on('routeChangeStart', handleRouteChange);
-
     return () => {
       // router.events.off('routeChangeStart', handleRouteChange);
     }
@@ -46,7 +45,7 @@ export default function CartSidebar({ isOpen, onClose }) {
 
   // Navigate to cart page
   const goToCart = () => {
-    // router.push('/cart');
+    router.push('/cart');
     onClose()
   }
 
@@ -96,7 +95,7 @@ export default function CartSidebar({ isOpen, onClose }) {
           </div>
 
           {/* Cart items */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-hidden p-4">
             {items.length === 0 ? (
               <EmptyState message="Your cart is empty" />
             ) : (
