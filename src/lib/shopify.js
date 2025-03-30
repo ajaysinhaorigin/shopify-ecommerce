@@ -37,13 +37,6 @@ if (looksLikeToken(originalApiUrl) && looksLikeUrl(originalAccessToken)) {
   apiUrl = originalAccessToken
   accessToken = originalApiUrl
   credentialsSwapped = true
-
-  console.log("After swap correction:")
-  console.log("Using API URL:", apiUrl)
-  console.log(
-    "Using Access Token:",
-    accessToken ? "AVAILABLE (value hidden)" : "MISSING"
-  )
 }
 
 // Validate the API URL, whether original or swapped
@@ -59,11 +52,15 @@ try {
 
     if (!isValidUrl) {
       console.error("API URL is not a valid Shopify URL:", apiUrl)
+
     } else {
       console.log("API URL is valid")
       safeApiUrl = apiUrl // Only set the safe URL if it's valid
     }
   } else {
+    console.error(
+      "API URL is not defined or has invalid format in environment variables"
+    )
   }
 } catch (e) {
   console.error("Error parsing API URL:", e.message)
@@ -85,6 +82,9 @@ if (!accessToken) {
 
   // Check if the token looks valid (basic check)
   if (accessToken.length < 20) {
+    console.warn(
+      "Access token looks unusually short. Shopify tokens are typically longer."
+    )
   } else if (looksLikeUrl(accessToken)) {
     console.warn("Access token looks like a URL. Credentials might be swapped.")
   }
@@ -157,6 +157,36 @@ export async function getCollectionByHandle(handle, filters = {}, first = 20) {
   }
 
   console.log(`Fetching collection with handle: ${handle}`)
+
+  // Special case for "all" collection - shows products from all collections
+  if (handle === "all") {
+    try {
+      console.log("Fetching collections for all page")
+      // First, get all collections
+      const collectionsResult = await getCollections()
+
+      if (!collectionsResult || collectionsResult.length === 0) {
+        console.error("No collections found for all collections query")
+        return null
+      }
+
+      console.log(`Found ${collectionsResult.length} collections`)
+
+      // Create a combined view that shows all collections
+      return {
+        id: "all-collections",
+        title: "All Collections",
+        description: "Browse all collections in our store",
+        isCollectionsPage: true,
+        collections: collectionsResult,
+      }
+    } catch (error) {
+      console.error("Error details:", JSON.stringify(error, null, 2))
+      return null
+    }
+  }
+
+  // Normal collection handling
   // Default to COLLECTION_DEFAULT for sorting if not specified
   const {
     priceMin,
@@ -230,23 +260,16 @@ export async function getCollectionByHandle(handle, filters = {}, first = 20) {
       },
     })
 
-    if (!data || !data?.collection) {
+    if (!data || !data.collection) {
       console.error(`No collection found with handle: ${handle}`)
       return null
     }
-
-    console.log(`Collection data received for ${handle}:`, {
-      id: data.collection.id,
-      title: data.collection.title,
-      productsCount: data.collection.products.edges.length,
-    })
 
     return {
       ...data.collection,
       products: data.collection.products.edges.map(({ node }) => node),
     }
   } catch (error) {
-    console.error(`Error fetching collection with handle ${handle}:`, error)
     console.error("Error details:", JSON.stringify(error, null, 2))
     return null
   }
@@ -403,17 +426,12 @@ export async function createCheckout(lineItems) {
     return data.checkoutCreate.checkout
   } catch (error) {
     console.error("Error creating checkout:", error)
-    throw error
   }
 }
 
 // Get available filters for a collection
 export async function getCollectionFilters(handle) {
   try {
-    // In a real implementation, you would fetch the available filters from the API
-    // For this demo, we'll return some example filters
-
-    // For a production app, you'd fetch these dynamically from the Shopify API
     return [
       {
         id: "size",
