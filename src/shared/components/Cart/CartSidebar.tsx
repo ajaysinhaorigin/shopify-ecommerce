@@ -1,13 +1,14 @@
 "use client"
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import CartItem from './CartItem';
-// import { checkout } from '../../../store/cartSlice';
-// import EmptyState from '../Utils/EmptyState';
+import { checkout } from '../../../store/cartSlice';
+import { usePathname } from 'next/navigation';
+import EmptyState from '../UI/EmptyState';
 
 export default function CartSidebar({ isOpen, onClose }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const pathname = usePathname()
   const dispatch = useDispatch();
   const { items, checkoutUrl, loading } = useSelector((state:any) => state.cart);
   
@@ -26,21 +27,21 @@ export default function CartSidebar({ isOpen, onClose }) {
       onClose();
     };
     
-    router.events.on('routeChangeStart', handleRouteChange);
+    // router.events.on('routeChangeStart', handleRouteChange);
     
     return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
+      // router.events.off('routeChangeStart', handleRouteChange);
     };
-  }, [router, onClose]);
+  }, [ onClose]);
   
   // Handle checkout
   const handleCheckout = () => {
-    // dispatch(checkout() as any);
+    dispatch(checkout() as any);
   };
   
   // Navigate to cart page
   const goToCart = () => {
-    router.push('/cart');
+    // router.push('/cart');
     onClose();
   };
   
@@ -78,7 +79,7 @@ export default function CartSidebar({ isOpen, onClose }) {
           
           {/* Cart items */}
           <div className="flex-1 overflow-y-auto p-4">
-            {/* {items.length === 0 ? (
+            {items.length === 0 ? (
               <EmptyState message="Your cart is empty" />
             ) : (
               <div className="space-y-6">
@@ -86,7 +87,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                   <CartItem key={item.id} item={item} />
                 ))}
               </div>
-            )} */}
+            )}
           </div>
           
           {/* Footer */}

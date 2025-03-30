@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import CartSidebar from '../Cart/CartSidebar';
 
 const Header = () => {
   const pathname = usePathname();
@@ -169,7 +170,7 @@ const Header = () => {
     </div>
 
     {/* Cart Sidebar */}
-    {/* <CartSidebar isOpen={showCart} onClose={() => setShowCart(false)} /> */}
+    <CartSidebar isOpen={showCart} onClose={() => setShowCart(false)} />
   </header>
   )
 }
