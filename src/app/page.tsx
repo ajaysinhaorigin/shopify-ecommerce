@@ -1,4 +1,5 @@
 import CollectionList from '@/shared/components/CollectionList';
+import FeaturedProducts from '@/shared/components/FeaturedProducts';
 import Head from 'next/head';
 import Link from 'next/link';
 
@@ -47,7 +48,11 @@ export default function Home() {
         </div>
       </section>
       
-      <CollectionList/>
+      {/* Collections Section */}
+      <CollectionList />
+      
+      {/* Featured Products Section */}
+      <FeaturedProducts />
     </>
   );
 }

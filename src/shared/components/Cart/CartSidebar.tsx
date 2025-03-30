@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CartItem from './CartItem';
 import { checkout } from '../../../store/cartSlice';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import EmptyState from '../UI/EmptyState';
 
 export default function CartSidebar({ isOpen, onClose }) {
-  // const router = useRouter();
+  const router:any = useRouter();
   const pathname = usePathname()
   const dispatch = useDispatch();
   const { items, checkoutUrl, loading } = useSelector((state:any) => state.cart);
@@ -27,10 +27,10 @@ export default function CartSidebar({ isOpen, onClose }) {
       onClose();
     };
     
-    // router.events.on('routeChangeStart', handleRouteChange);
+    router.events.on('routeChangeStart', handleRouteChange);
     
     return () => {
-      // router.events.off('routeChangeStart', handleRouteChange);
+      router.events.off('routeChangeStart', handleRouteChange);
     };
   }, [ onClose]);
   
