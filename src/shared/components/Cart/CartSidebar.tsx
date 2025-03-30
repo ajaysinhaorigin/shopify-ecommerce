@@ -40,7 +40,7 @@ export default function CartSidebar({ isOpen, onClose }) {
 
   // Handle checkout
   const handleCheckout = () => {
-    dispatch(checkout() as any)
+    // dispatch(checkout() as any)
   }
 
   // Navigate to cart page

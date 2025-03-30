@@ -10,6 +10,7 @@ import {
 } from "../../../lib/shopify"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
+import ProductFilters from "@/shared/components/Product/ProductFilters"
 
 export default function CollectionPage() {
   const router = useRouter()
@@ -18,7 +19,7 @@ export default function CollectionPage() {
   console.log(`Collection page rendering with handle: ${handle}`)
 
   const [collection, setCollection] = useState<any>(null)
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState<any>([])
   const [filters, setFilters] = useState<any>([])
   const [activeFilters, setActiveFilters] = useState({})
   const [loading, setLoading] = useState(true)
@@ -91,7 +92,7 @@ export default function CollectionPage() {
     const newUrl = `${window.location.pathname}${
       queryParams.toString() ? "?" + queryParams.toString() : ""
     }`
-    // router.push(newUrl, undefined, { shallow: true });
+    router.push(newUrl, undefined)
   }
 
   // Handle sorting change
@@ -120,10 +121,16 @@ export default function CollectionPage() {
         sortKey = "CREATED"
         reverse = true
         break
-      default:
+      case "best-selling":
         sortKey = "BEST_SELLING"
         reverse = false
+        break
+      default:
+        sortKey = "COLLECTION_DEFAULT"
+        reverse = false
     }
+
+    console.log("Applying sort:", { sortKey, reverse })
 
     // Update active filters with sort parameters
     handleFilterChange({
@@ -135,8 +142,6 @@ export default function CollectionPage() {
 
   const pageTitle = collection ? `${collection.title} Collection` : "Collection"
 
-  console.log('collection ---',collection)
-    
   return (
     <div className="container mx-auto px-4">
       {apiError ? (
@@ -170,7 +175,7 @@ export default function CollectionPage() {
               {/* Special case for "all" collection which shows all collections */}
               {collection && collection.isCollectionsPage ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
-                  {collection.collections.map((collection:any) => (
+                  {collection.collections.map((collection) => (
                     <Link
                       key={collection.id}
                       href={`/collections/${collection.handle}`}
@@ -189,7 +194,7 @@ export default function CollectionPage() {
                           </div>
                         )}
 
-                        <div className="absolute inset-0 bg-black opacity-30 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
                           <h3 className="text-xl text-white font-bold text-center p-4">
                             {collection.title}
                           </h3>
@@ -201,6 +206,14 @@ export default function CollectionPage() {
               ) : (
                 /* Regular collection with products */
                 <div className="flex flex-col md:flex-row gap-6 mb-8">
+                  {/* <div className="w-full md:w-1/4">
+                    <ProductFilters
+                      availableFilters={filters}
+                      activeFilters={activeFilters}
+                      onFilterChange={handleFilterChange}
+                    />
+                  </div> */}
+
                   <div className="w-full md:w-3/4">
                     {/* Sort dropdown */}
                     <div className="flex justify-between items-center mb-6">
